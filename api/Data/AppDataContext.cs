@@ -13,5 +13,11 @@ namespace api.Data
 
         // Definição de Classes que serão nossas tabelas
         public DbSet<Usuario> Usuarios { get; set; }
+
+        // Definição de Classes que serão nossas tabelas
+        public DbSet<FichaRpg>? FichaRpg { get; set; }
+
+        // Definição de Classes que serão nossas tabelas
+        public DbSet<Habilidade>? Habilidade { get; set; }
     }
 }

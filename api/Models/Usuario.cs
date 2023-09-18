@@ -14,6 +14,6 @@
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizado { get; set; }
         public bool? Deletado { get; set; }
-        
+        public string? Email { get; set; }
     }
 }
