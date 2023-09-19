@@ -7,7 +7,6 @@
 
         public string Antecedência { get; set; }
         public string NomeDoJogador { get; set; }
-        public string NomeDoPersonagem { get; set; }
 
         public string Raça { get; set; }
         public string Alinhamento { get; set; }
