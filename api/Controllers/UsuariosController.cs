@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using api.Data;
@@ -21,25 +19,20 @@ namespace api.Controllers
             _context = context;
         }
 
+        // ##### Listar Usuários #####
         // GET: api/Usuarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
-          if (_context.Usuarios == null)
-          {
-              return NotFound();
-          }
-            return await _context.Usuarios.ToListAsync();
+            var usuarios = await _context.Usuarios.ToListAsync();
+            return Ok(usuarios);
         }
 
-        // GET: api/Usuarios/5
+        // ##### Listar Usuário por ID #####
+        // GET: api/Usuarios/id_do_usuario
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
-          if (_context.Usuarios == null)
-          {
-              return NotFound();
-          }
             var usuario = await _context.Usuarios.FindAsync(id);
 
             if (usuario == null)
@@ -47,11 +40,22 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return usuario;
+            return Ok(usuario);
         }
 
+        // ##### Cadastrar Usuário #####
+        // POST: api/Usuarios
+        [HttpPost]
+        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        {
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.UsuarioId }, usuario);
+        }
+
+        // ##### Atualizar Usuário #####
         // PUT: api/Usuarios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
@@ -81,29 +85,11 @@ namespace api.Controllers
             return NoContent();
         }
 
-        // POST: api/Usuarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
-        {
-          if (_context.Usuarios == null)
-          {
-              return Problem("Entity set 'AppDataContext.Usuarios'  is null.");
-          }
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUsuario", new { id = usuario.UsuarioId }, usuario);
-        }
-
+        // ##### Remover Usuário #####
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            if (_context.Usuarios == null)
-            {
-                return NotFound();
-            }
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
@@ -118,7 +104,7 @@ namespace api.Controllers
 
         private bool UsuarioExists(int id)
         {
-            return (_context.Usuarios?.Any(e => e.UsuarioId == id)).GetValueOrDefault();
+            return _context.Usuarios.Any(e => e.UsuarioId == id);
         }
     }
 }
