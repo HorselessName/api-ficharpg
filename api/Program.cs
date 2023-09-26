@@ -1,15 +1,15 @@
 using api.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container with builder.
+// Define our Database Context
+// Ref. https://www.connectionstrings.com
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDataContext>(
-    // Define how our objects will be created.
-    // Ref. https://www.connectionstrings.com
-    options => options.UseSqlite("Data Source=mos_database.db;Cache=shared")
-    );
+builder.Services.AddDbContext<AppDataContext>(options => 
+    options.UseSqlite("Data Source=mos_database.db;Cache=shared").UseSnakeCaseNamingConvention()
+);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -24,10 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Redirecionar HTTP para HTTPs
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

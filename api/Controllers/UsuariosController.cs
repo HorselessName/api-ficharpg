@@ -48,10 +48,14 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
+            // Define as propriedades que você deseja configurar automaticamente
+            usuario.DataCriacao = DateTime.Now;
+            usuario.Deletado = false;
+
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.UsuarioId }, usuario);
+            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuario);
         }
 
         // ##### Atualizar Usuário #####
@@ -59,7 +63,7 @@ namespace api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
-            if (id != usuario.UsuarioId)
+            if (id != usuario.IdUsuario)
             {
                 return BadRequest();
             }
@@ -104,7 +108,7 @@ namespace api.Controllers
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuarios.Any(e => e.UsuarioId == id);
+            return _context.Usuarios.Any(e => e.IdUsuario == id);
         }
     }
 }

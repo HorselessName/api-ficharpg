@@ -1,5 +1,6 @@
 ﻿using api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace api.Data
 {
@@ -24,17 +25,31 @@ namespace api.Data
         // Configuração de relacionamentos no método OnModelCreating
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuração do relacionamento "um para muitos" entre Usuario e FichasRpg
-            modelBuilder.Entity<Usuario>()
-                .HasMany(u => u.FichasRpg)
-                .WithOne(fr => fr.Usuario)
-                .HasForeignKey(fr => fr.UsuarioId);
+            // ##### Definição das Tabelas e Relacionamentos #####
+            // Chaves Primários
+            modelBuilder.Entity<Usuario>().HasKey(usuario => usuario.IdUsuario);
+            modelBuilder.Entity<Habilidade>().HasKey(habilidade => habilidade.IdHabilidade);
 
-            // Configuração do relacionamento "um para muitos" entre FichaRpg e Habilidades
-            modelBuilder.Entity<FichaRpg>()
-                .HasMany(fr => fr.Habilidades)
-                .WithOne(h => h.FichaRpg)
-                .HasForeignKey(h => h.FichaRpgId);
+            // FichaRPG
+            // - Tem um relacionamento com o objeto Usuario de 1..N
+            // - Não tem navigation properties para evitar dependências
+            // - Possui chave estrangeira nos relacionamentos
+            // - Ficha RPG depende de um usuario existir e habilidade existir
+            modelBuilder.Entity<FichaRpg>(ficha => {
+                ficha.HasKey(fichaid => fichaid.IdFichaRpg);
+
+                // ##### Relacionamento Usuario #####
+                ficha.HasOne<Usuario>()
+                .WithMany()
+                .HasForeignKey(usuarioid => usuarioid.IdUsuario)
+                .IsRequired();
+
+                // ##### Relacionamento Habilidades #####
+                ficha.HasMany(tem => tem.Habilidades)
+                .WithOne()
+                .HasForeignKey(habilidadeid => habilidadeid.IdHabilidade)
+                .IsRequired();
+            });
         }
     }
 }

@@ -1,26 +1,29 @@
-﻿namespace api.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace api.Models
 {
     public class Usuario
     {
-        // Construtor para sempre atribuir a data de criação do objeto
-        public Usuario()
-        {
-            DataCriacao = DateTime.Now;
-        }
+        // ##### Propriedades Bloqueadas no Request #####
+        [NotMapped]
+        public long IdUsuario { get; internal set; }
 
-        // Criar as propriedades de forma abreviada para nossa tabela.
-        public int UsuarioId { get; set; }
-        public string? Nome { get; set; }
-
-        // As propriedades abaixo serão usadas para sempre que houver uma
-        // criação ou atualização neste modelo.
+        [NotMapped]
         public DateTime DataCriacao { get; set; }
-        public DateTime? DataAtualizado { get; set; } // Alterado para DateTime?
 
-        // Essa propriedade vai servir para ao invés do usuário ser deletado,
-        // ele vai ser marcado como deletado apenas.
+        [NotMapped]
+        public DateTime? DataAtualizado { get; set; }
+
+        [NotMapped]
         public bool? Deletado { get; set; }
 
-        public string? Email;
+        // ##### Propriedades para API #####
+        [Required] // Garante que o Nome seja fornecido
+        public string Nome { get; set; }
+
+        [Required] // Garante que o Email seja fornecido
+        public string Email { get; set; }
+        
     }
 }
