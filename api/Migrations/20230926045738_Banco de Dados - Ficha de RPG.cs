@@ -15,6 +15,8 @@ namespace api.Migrations
                 {
                     id_usuario = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    data_criacao = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    deletado = table.Column<bool>(type: "INTEGER", nullable: true),
                     nome = table.Column<string>(type: "TEXT", nullable: false),
                     email = table.Column<string>(type: "TEXT", nullable: false)
                 },

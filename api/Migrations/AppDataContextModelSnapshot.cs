@@ -105,6 +105,14 @@ namespace api.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
 
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("data_criacao");
+
+                    b.Property<bool?>("Deletado")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("deletado");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT")

@@ -11,7 +11,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20230926042417_Banco de Dados - Ficha de RPG")]
+    [Migration("20230926045738_Banco de Dados - Ficha de RPG")]
     partial class BancodeDadosFichadeRPG
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,6 +106,14 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("data_criacao");
+
+                    b.Property<bool?>("Deletado")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("deletado");
 
                     b.Property<string>("Email")
                         .IsRequired()

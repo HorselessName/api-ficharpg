@@ -48,10 +48,6 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
-            // Define as propriedades que você deseja configurar automaticamente
-            usuario.DataCriacao = DateTime.Now;
-            usuario.Deletado = false;
-
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 

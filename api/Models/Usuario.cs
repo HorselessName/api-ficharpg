@@ -5,17 +5,19 @@ namespace api.Models
 {
     public class Usuario
     {
+        public Usuario() { 
+            DataCriacao = DateTime.Now;
+            Deletado = false;
+        }
+
         // ##### Propriedades Bloqueadas no Request #####
-        [NotMapped]
         public long IdUsuario { get; internal set; }
 
-        [NotMapped]
         public DateTime DataCriacao { get; set; }
 
         [NotMapped]
         public DateTime? DataAtualizado { get; set; }
 
-        [NotMapped]
         public bool? Deletado { get; set; }
 
         // ##### Propriedades para API #####
