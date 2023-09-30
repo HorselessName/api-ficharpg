@@ -11,7 +11,7 @@ namespace api.Models
         }
 
         // ##### Propriedades Bloqueadas no Request #####
-        public long IdUsuario { get; internal set; }
+        public long IdUsuario { get; set; }
 
         public DateTime DataCriacao { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using api.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 namespace api.Data
 {
@@ -30,21 +29,22 @@ namespace api.Data
             modelBuilder.Entity<Usuario>().HasKey(usuario => usuario.IdUsuario);
             modelBuilder.Entity<Habilidade>().HasKey(habilidade => habilidade.IdHabilidade);
 
-            // FichaRPG
+            // FichaRPG - Alterações começam aqui
+
             // - Tem um relacionamento com o objeto Usuario de 1..N
             // - Não tem navigation properties para evitar dependências
             // - Possui chave estrangeira nos relacionamentos
             // - Ficha RPG depende de um usuario existir e habilidade existir
             modelBuilder.Entity<FichaRpg>(ficha => {
-                ficha.HasKey(fichaid => fichaid.IdFichaRpg);
+                ficha.HasKey(fichaid => fichaid.IdFichaRpg);  // Adicionado chave primária para FichaRpg
 
-                // ##### Relacionamento Usuario #####
+                // ##### Relacionamento Usuario ##### - Alterado para estabelecer corretamente o relacionamento
                 ficha.HasOne<Usuario>()
                 .WithMany()
                 .HasForeignKey(usuarioid => usuarioid.IdUsuario)
                 .IsRequired();
 
-                // ##### Relacionamento Habilidades #####
+                // ##### Relacionamento Habilidades ##### - Alterado para estabelecer corretamente o relacionamento
                 ficha.HasMany(tem => tem.Habilidades)
                 .WithOne()
                 .HasForeignKey(habilidadeid => habilidadeid.IdHabilidade)

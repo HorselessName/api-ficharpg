@@ -31,7 +31,7 @@ namespace api.Controllers
         // ##### Listar Usuário por ID #####
         // GET: api/Usuarios/id_do_usuario
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public async Task<ActionResult<Usuario>> GetUsuario(long id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
 
@@ -57,7 +57,7 @@ namespace api.Controllers
         // ##### Atualizar Usuário #####
         // PUT: api/Usuarios/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(long id, Usuario usuario)
         {
             if (id != usuario.IdUsuario)
             {
@@ -88,7 +88,7 @@ namespace api.Controllers
         // ##### Remover Usuário #####
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public async Task<IActionResult> DeleteUsuario(long id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
@@ -102,7 +102,7 @@ namespace api.Controllers
             return NoContent();
         }
 
-        private bool UsuarioExists(int id)
+        private bool UsuarioExists(long id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
         }
