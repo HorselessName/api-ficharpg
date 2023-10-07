@@ -11,8 +11,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20230930163552_mos")]
-    partial class mos
+    [Migration("20231007173437_fichaHabilidade")]
+    partial class fichaHabilidade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,8 +82,13 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Habilidade", b =>
                 {
                     b.Property<int>("IdHabilidade")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("id_habilidade");
+
+                    b.Property<int>("IdFichaRpg")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id_ficha_rpg");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -139,21 +144,6 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_fichas_rpg_usuarios_usuario_id_usuario");
-                });
-
-            modelBuilder.Entity("api.Models.Habilidade", b =>
-                {
-                    b.HasOne("api.Models.FichaRpg", null)
-                        .WithMany("Habilidades")
-                        .HasForeignKey("IdHabilidade")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_habilidades_fichas_rpg_ficha_rpg_temp_id");
-                });
-
-            modelBuilder.Entity("api.Models.FichaRpg", b =>
-                {
-                    b.Navigation("Habilidades");
                 });
 #pragma warning restore 612, 618
         }

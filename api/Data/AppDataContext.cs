@@ -45,11 +45,11 @@ namespace api.Data
                 .IsRequired();
 
                 // ##### Relacionamento Habilidades ##### - Alterado para estabelecer corretamente o relacionamento
-                ficha.HasMany(tem => tem.Habilidades)
-                .WithOne()
-                .HasForeignKey(habilidadeid => habilidadeid.IdHabilidade)
-                .IsRequired();
+                
+                
             });
+
+            
         }
     }
 }
