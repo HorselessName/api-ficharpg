@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using api.Data;
 using api.Models;
+using SQLitePCL;
 
 namespace api.Controllers
 {
@@ -39,8 +40,8 @@ namespace api.Controllers
         public async Task<ActionResult<FichaRpg>> PostFichaRpg(FichaRpg fichaRpg)
         {
             _context.FichasRpg.Add(fichaRpg);
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetFichaRpg), new { id = fichaRpg.IdFichaRpg }, fichaRpg);
         }
 

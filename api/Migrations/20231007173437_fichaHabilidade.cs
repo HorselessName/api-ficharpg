@@ -5,10 +5,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
 {
-    public partial class BancodeDadosFichadeRPG : Migration
+    public partial class fichaHabilidade : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "habilidades",
+                columns: table => new
+                {
+                    id_habilidade = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    nome = table.Column<string>(type: "TEXT", nullable: false),
+                    pontos = table.Column<int>(type: "INTEGER", nullable: false),
+                    id_ficha_rpg = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_habilidades", x => x.id_habilidade);
+                });
+
             migrationBuilder.CreateTable(
                 name: "usuarios",
                 columns: table => new
@@ -53,25 +68,6 @@ namespace api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "habilidades",
-                columns: table => new
-                {
-                    id_habilidade = table.Column<int>(type: "INTEGER", nullable: false),
-                    nome = table.Column<string>(type: "TEXT", nullable: false),
-                    pontos = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_habilidades", x => x.id_habilidade);
-                    table.ForeignKey(
-                        name: "fk_habilidades_fichas_rpg_ficha_rpg_temp_id",
-                        column: x => x.id_habilidade,
-                        principalTable: "fichas_rpg",
-                        principalColumn: "id_ficha_rpg",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "ix_fichas_rpg_id_usuario",
                 table: "fichas_rpg",
@@ -81,10 +77,10 @@ namespace api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "habilidades");
+                name: "fichas_rpg");
 
             migrationBuilder.DropTable(
-                name: "fichas_rpg");
+                name: "habilidades");
 
             migrationBuilder.DropTable(
                 name: "usuarios");

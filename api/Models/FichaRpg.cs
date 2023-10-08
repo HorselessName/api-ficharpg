@@ -17,7 +17,6 @@
         // Referenciar um ID para o ModelBuilder - Se relacionar com o Usuario é obrigatório
         public long IdUsuario { get; set; }
 
-        // Relacionamento: A Classe FichaRpg pode ter muitas habilidades.
-        public List<Habilidade> Habilidades { get; set; } = null!;
+        
     }
 }
