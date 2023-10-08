@@ -1,4 +1,3 @@
-{
     /**
      * Controller responsável por gerenciar as requisições SOMENTE LEITURA referentes a Habilidades
      **/
