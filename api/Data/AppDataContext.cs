@@ -21,7 +21,9 @@ namespace api.Data
         // Definição de Classes que serão nossas tabelas
         public DbSet<Habilidade> Habilidades { get; set; }
 
-        // Configuração de relacionamentos no método OnModelCreating
+        // Antes de criar as tabelas do FichaRpg e do Usuario precisamos
+        // criar as tabelas que possuem relacionamento com elas.
+        // Vamos usar a service criada que contém tais dados, chamado HabilidadeService.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // ##### Definição das Tabelas e Relacionamentos #####
@@ -35,7 +37,8 @@ namespace api.Data
             // - Não tem navigation properties para evitar dependências
             // - Possui chave estrangeira nos relacionamentos
             // - Ficha RPG depende de um usuario existir e habilidade existir
-            modelBuilder.Entity<FichaRpg>(ficha => {
+            modelBuilder.Entity<FichaRpg>(ficha =>
+            {
                 ficha.HasKey(fichaid => fichaid.IdFichaRpg);  // Adicionado chave primária para FichaRpg
 
                 // ##### Relacionamento Usuario ##### - Alterado para estabelecer corretamente o relacionamento

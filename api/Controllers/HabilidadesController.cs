@@ -1,3 +1,7 @@
+{
+    /**
+     * Controller responsável por gerenciar as requisições SOMENTE LEITURA referentes a Habilidades
+     **/
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
