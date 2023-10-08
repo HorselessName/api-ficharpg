@@ -1,7 +1,7 @@
 using api.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 
+// Define our Web API Builder
 var builder = WebApplication.CreateBuilder(args);
 
 // Define our Database Context
@@ -11,9 +11,13 @@ builder.Services.AddDbContext<AppDataContext>(options =>
     options.UseSqlite("Data Source=mos_database.db;Cache=shared").UseSnakeCaseNamingConvention()
 );
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add our Endpoint Routing and Swagger API Documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ##### Regras de Negócios / Services #####
+// Carregar no banco de dados as habilidades com o HabilidadesService.
+builder.Services.AddSingleton<api.Services.HabilidadesService>();
 
 var app = builder.Build();
 
