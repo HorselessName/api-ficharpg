@@ -23,6 +23,7 @@ namespace api.Controllers
             return await _context.FichasRpg.ToListAsync();
         }
 
+
         [HttpGet("{id}")]
         public async Task<ActionResult<FichaRpg>> GetFichaRpg(int id)
         {
@@ -35,6 +36,7 @@ namespace api.Controllers
 
             return fichaRpg;
         }
+
 
         [HttpPost]
         public async Task<ActionResult<FichaRpg>> PostFichaRpg(FichaRpg fichaRpg)
@@ -74,16 +76,41 @@ namespace api.Controllers
             return NoContent();
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFichaRpg(int id)
         {
             var fichaRpg = await _context.FichasRpg.FindAsync(id);
+             
             if (fichaRpg == null)
             {
                 return NotFound();
             }
 
+            List<Habilidade> listaHabilidades = await _context.Habilidades.ToListAsync();
+            
+            foreach(Habilidade habilidade in listaHabilidades){
+                if(habilidade.IdFichaRpg == id){
+                    await DeleteHabilidade(habilidade.IdFichaRpg);
+                }
+            }
+
             _context.FichasRpg.Remove(fichaRpg);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+        protected async Task<IActionResult> DeleteHabilidade(int id)
+        {
+            var habilidade = await _context.Habilidades.FindAsync(id);
+            if (habilidade == null)
+            {
+                return NotFound();
+            }
+
+            _context.Habilidades.Remove(habilidade);
             await _context.SaveChangesAsync();
 
             return NoContent();
