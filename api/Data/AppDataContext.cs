@@ -1,5 +1,6 @@
 ﻿using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace api.Data
 {
@@ -48,6 +49,23 @@ namespace api.Data
                 
                 
             });
+
+            modelBuilder.Entity<Habilidade>(habilidade => {
+                habilidade.HasKey(habilidade => habilidade.IdHabilidade);  // Adicionado chave primária para FichaRpg
+
+                // ##### Relacionamento Usuario ##### - Alterado para estabelecer corretamente o relacionamento
+                habilidade.HasOne<FichaRpg>()
+                .WithMany()
+                .HasForeignKey(f => f.IdFichaRpg)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+                // ##### Relacionamento Habilidades ##### - Alterado para estabelecer corretamente o relacionamento
+                
+                
+            });
+
+            
 
             
         }
