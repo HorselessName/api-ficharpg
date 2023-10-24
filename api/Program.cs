@@ -32,5 +32,11 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Fix CORs - Allow Any Origin.
+app.UseCors(
+    request => request.AllowAnyOrigin()
+    );
+
 app.MapControllers();
 app.Run();
