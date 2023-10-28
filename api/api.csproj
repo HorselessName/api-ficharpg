@@ -14,7 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="..\DependencyValidation\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
+    <None Include="..\Arquitetura.dgml" Link="Diagrams\Arquitetura.dgml" />
+    <None Include="..\DependencyValidation\DependencyValidation1.layerdiagram.layout" Link="DependencyValidation1.layerdiagram.layout" />
+    <None Include="..\DependencyValidation\DependencyValidation1.layerdiagram.suppressions" Link="DependencyValidation1.layerdiagram.suppressions" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.21">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
