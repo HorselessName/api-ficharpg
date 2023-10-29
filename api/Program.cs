@@ -1,42 +1,101 @@
 using api.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
 
-// Define our Web API Builder
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Define our Database Context
-// Ref. https://www.connectionstrings.com
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDataContext>(options => 
+builder.Services.AddDbContext<AppDataContext>(options =>
     options.UseSqlite("Data Source=mos_database.db;Cache=shared").UseSnakeCaseNamingConvention()
 );
 
-// Add our Endpoint Routing and Swagger API Documentation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// ##### Regras de Negócios / Services #####
-// Carregar no banco de dados as habilidades com o HabilidadesService.
-builder.Services.AddSingleton<api.Services.HabilidadesService>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - Ficha de RPG", Version = "v1" });
+    c.EnableAnnotations();
+});
 
-var app = builder.Build();
+WebApplication app = builder.Build();
+ApplyMigrations(app);
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// Redirecionar HTTP para HTTPs
-// app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
+SetupCORS(app);
 
-// Fix CORs - Allow Any Origin.
-app.UseCors(
-    request => request.AllowAnyOrigin()
-    );
+// Adicionando o middleware de tratamento de exceção
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
+
 app.Run();
+
+void ApplyMigrations(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDataContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Um erro ocorreu ao migrar ou criar o banco de dados: {ex.Message}");
+    }
+}
+
+void SetupCORS(WebApplication app)
+{
+    app.UseCors(request => request.AllowAnyOrigin());  // Mantenha isso em mente ao migrar para produção
+}
+
+public class ExceptionMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public ExceptionMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext httpContext)
+    {
+        try
+        {
+            await _next(httpContext);
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException ex)
+        {
+            await HandleExceptionAsync(httpContext, ex);
+        }
+    }
+
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+        var response = new
+        {
+            status = context.Response.StatusCode,
+            message = exception.Message
+        };
+
+        return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+    }
+
+}

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
+
 using api.Data;
 using api.Models;
+using api.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -13,58 +13,72 @@ namespace api.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly AppDataContext _context;
+        private const string USER_NOT_FOUND_MESSAGE = "Usuário não encontrado.";
 
         public UsuariosController(AppDataContext context)
         {
             _context = context;
         }
 
-        // ##### Listar Usuários #####
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioViewModel>>> GetUsuariosAsync()
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
-            return Ok(usuarios);
+            var usuarios = await _context.Usuarios
+                .Where(u => !(u.Deletado ?? true))
+                .Select(u => new UsuarioViewModel
+                {
+                    IdUsuario = u.IdUsuario,
+                    Nome = u.Nome,
+                    Email = u.Email
+                }).ToListAsync();
+
+            return !usuarios.Any()
+                ? Ok(new { message = "Nenhum usuário cadastrado." })
+                : Ok(usuarios);
         }
 
-        // ##### Listar Usuário por ID #####
-        // GET: api/Usuarios/id_do_usuario
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(long id)
+        public async Task<ActionResult<UsuarioViewModel>> GetUsuarioAsync(long id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
 
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(usuario);
+            return usuario != null
+                ? Ok(new UsuarioViewModel
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email
+                })
+                : NotFound(new { message = USER_NOT_FOUND_MESSAGE });
         }
 
-        // ##### Cadastrar Usuário #####
-        // POST: api/Usuarios
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<UsuarioModel>> PostUsuario(UsuarioViewModel userInput)
         {
+            UsuarioModel usuario = new()
+            {
+                Nome = userInput.Nome,
+                Email = userInput.Email
+            };
+
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuario);
+            return CreatedAtAction("GetUsuario", new { id = usuario.IdUsuario }, usuario);
         }
 
-        // ##### Atualizar Usuário #####
-        // PUT: api/Usuarios/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(long id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(long id, UsuarioViewModel userInput)
         {
-            if (id != usuario.IdUsuario)
-            {
-                return BadRequest();
-            }
+            var existingUser = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
 
-            _context.Entry(usuario).State = EntityState.Modified;
+            if (existingUser == null) return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+
+            existingUser.Nome = userInput.Nome;
+            existingUser.Email = userInput.Email;
+            existingUser.DataAtualizado = DateTime.Now;
+            _context.Entry(existingUser).State = EntityState.Modified;
 
             try
             {
@@ -72,39 +86,26 @@ namespace api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
             }
 
             return NoContent();
         }
 
-        // ##### Remover Usuário #####
-        // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(long id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
 
-            _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
+            if (usuario is null) return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+
+            usuario.Deletado = true;
+            usuario.DataAtualizado = DateTime.Now;
+            _context.Entry(usuario).State = EntityState.Modified;
+
+            _ = await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UsuarioExists(long id)
-        {
-            return _context.Usuarios.Any(e => e.IdUsuario == id);
         }
     }
 }
