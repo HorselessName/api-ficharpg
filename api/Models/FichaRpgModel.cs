@@ -10,7 +10,7 @@ namespace api.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdFichaRpg { get; set; }
+        public long IdFichaRpg { get; set; }
 
         [Required]
         public int Nível { get; set; }

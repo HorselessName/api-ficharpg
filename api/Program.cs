@@ -7,7 +7,13 @@ using System.Net;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    options =>
+    {
+        // Correção: No routes matched the supplied values.
+        options.SuppressAsyncSuffixInActionNames = false;
+    }
+    );
 builder.Services.AddDbContext<AppDataContext>(options =>
     options.UseSqlite("Data Source=mos_database.db;Cache=shared").UseSnakeCaseNamingConvention()
 );
