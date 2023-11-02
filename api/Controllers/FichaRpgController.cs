@@ -15,7 +15,7 @@ namespace api.Controllers
         private readonly AppDataContext _context;
         private const string FICHA_NOT_FOUND_MESSAGE = "Ficha de RPG não encontrada.";
         private const string USER_NOT_FOUND_MESSAGE = "Nenhum usuário encontrado com a ID informada.";
-        
+
         public FichasRpgController(AppDataContext context)
         {
             _context = context;
@@ -25,12 +25,14 @@ namespace api.Controllers
         [HttpGet("{idUsuario}/listar")]
         public async Task<ActionResult<IList<FichaRpgViewModel>>> GetFichasRpgAsync(long idUsuario)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario && !(u.Deletado ?? true));
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario && !(u.Deletado ?? true));
 
             if (usuario == null)
+            {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+            }
 
-            var fichas = await _context.FichasRpg
+            List<FichaRpgViewModel> fichas = await _context.FichasRpg
                         .Where(f => f.IdUsuario == idUsuario && !(f.Deletado ?? true))
                         .Select(f => new FichaRpgViewModel
                         {
@@ -43,44 +45,44 @@ namespace api.Controllers
                             PontosDeExperiência = f.PontosDeExperiência
                         }).ToListAsync();
 
-            if (!fichas.Any())
-                return Ok(new { message = $"O astuto {usuario.Nome} (ID: {idUsuario}) ainda não se aventurou no mundo do RPG por aqui! 😲" });
-
-            return Ok(fichas);
+            return !fichas.Any()
+                ? (ActionResult<IList<FichaRpgViewModel>>)Ok(new { message = $"O astuto {usuario.Nome} (ID: {idUsuario}) ainda não se aventurou no mundo do RPG por aqui! 😲" })
+                : (ActionResult<IList<FichaRpgViewModel>>)Ok(fichas);
         }
 
         // Listar Ficha do Usuario -- GET: api/FichasRpg/1/listar/1
         [HttpGet("{idUsuario}/listar/{idFicha}")]
         public async Task<ActionResult<FichaRpgViewModel>> GetFichaRpgAsync(long idUsuario, long idFicha)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario && !(u.Deletado ?? true));
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario && !(u.Deletado ?? true));
 
             if (usuario == null)
+            {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+            }
 
-            var ficha = await _context.FichasRpg
+            FichaRpgModel ficha = await _context.FichasRpg
                                 .FirstOrDefaultAsync(f => f.IdUsuario == idUsuario && f.IdFichaRpg == idFicha && !(f.Deletado ?? true));
 
-            if (ficha == null)
-                return NotFound(new { message = $"Poxa, parece que essa Ficha de RPG (ID: {idFicha}) se escondeu do {usuario.Nome} (ID: {idUsuario}) ou foi transportada para outra dimensão. 🌌" });
-
-            return Ok(new FichaRpgViewModel
-            {
-                IdFichaRpg = ficha.IdFichaRpg,
-                Nível = ficha.Nível,
-                Antecedente = ficha.Antecedente,
-                NomeDoJogador = ficha.NomeDoJogador,
-                Raça = ficha.Raça,
-                Alinhamento = ficha.Alinhamento,
-                PontosDeExperiência = ficha.PontosDeExperiência
-            });
+            return ficha == null
+                ? (ActionResult<FichaRpgViewModel>)NotFound(new { message = $"Poxa, parece que essa Ficha de RPG (ID: {idFicha}) se escondeu do {usuario.Nome} (ID: {idUsuario}) ou foi transportada para outra dimensão. 🌌" })
+                : (ActionResult<FichaRpgViewModel>)Ok(new FichaRpgViewModel
+                {
+                    IdFichaRpg = ficha.IdFichaRpg,
+                    Nível = ficha.Nível,
+                    Antecedente = ficha.Antecedente,
+                    NomeDoJogador = ficha.NomeDoJogador,
+                    Raça = ficha.Raça,
+                    Alinhamento = ficha.Alinhamento,
+                    PontosDeExperiência = ficha.PontosDeExperiência
+                });
         }
 
         // Cadastrar Ficha -- POST: api/FichasRpg/1/criar
         [HttpPost("{idUsuario}/criar")]
         public async Task<ActionResult<object>> PostFichaRpg(long idUsuario, FichaRpgViewModel fichaInput)
         {
-            var usuario = await _context.Usuarios.FindAsync(idUsuario);
+            UsuarioModel usuario = await _context.Usuarios.FindAsync(idUsuario);
 
             if (usuario is null)
             {
@@ -90,10 +92,13 @@ namespace api.Controllers
             if (AreAnyNullOrEmpty(
                 fichaInput.NomeDoJogador,
                 fichaInput.Raça,
-                fichaInput.Alinhamento)) return BadRequest(new
+                fichaInput.Alinhamento))
+            {
+                return BadRequest(new
                 {
                     message = "Nome do Jogador, Raça e Alinhamento são obrigatórios!"
                 });
+            }
 
             if (!fichaInput.Nível.HasValue || !fichaInput.PontosDeExperiência.HasValue)
             {
@@ -114,12 +119,12 @@ namespace api.Controllers
                 IdUsuario = idUsuario
             };
 
-            _context.FichasRpg.Add(ficha);
-            await _context.SaveChangesAsync();
+            _ = _context.FichasRpg.Add(ficha);
+            _ = await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 actionName: nameof(GetFichaRpgAsync),
-                routeValues: new { idUsuario = idUsuario, idFicha = ficha.IdFichaRpg },
+                routeValues: new { idUsuario, idFicha = ficha.IdFichaRpg },
                 value: new
                 {
                     message = "A Ficha de RPG foi criada com maestria! 🎲",
@@ -131,13 +136,13 @@ namespace api.Controllers
         [HttpPut("{idUsuario}/atualizar/{idFicha}")]
         public async Task<IActionResult> PutFichaRpg(long idUsuario, long idFicha, FichaRpgViewModel fichaInput)
         {
-            var usuario = await _context.Usuarios.FindAsync(idUsuario);
+            UsuarioModel usuario = await _context.Usuarios.FindAsync(idUsuario);
             if (usuario is null)
             {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
             }
 
-            var existingFicha = await _context.FichasRpg.FirstOrDefaultAsync(f => f.IdFichaRpg == idFicha && f.Deletado != true && f.IdUsuario == idUsuario);
+            FichaRpgModel existingFicha = await _context.FichasRpg.FirstOrDefaultAsync(f => f.IdFichaRpg == idFicha && f.Deletado != true && f.IdUsuario == idUsuario);
             if (existingFicha == null)
             {
                 return NotFound(new { message = FICHA_NOT_FOUND_MESSAGE });
@@ -160,7 +165,7 @@ namespace api.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _ = await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -174,27 +179,26 @@ namespace api.Controllers
         [HttpDelete("{idUsuario}/{idFicha}")]
         public async Task<IActionResult> DeleteFichaRpg(long idUsuario, long idFicha)
         {
-            var usuario = await _context.Usuarios.FindAsync(idUsuario);
+            UsuarioModel usuario = await _context.Usuarios.FindAsync(idUsuario);
 
             if (usuario is null)
             {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
             }
 
-            var ficha = await _context.FichasRpg.FirstOrDefaultAsync(f => f.IdFichaRpg == idFicha && f.IdUsuario == idUsuario);
+            FichaRpgModel ficha = await _context.FichasRpg.FirstOrDefaultAsync(f => f.IdFichaRpg == idFicha && f.IdUsuario == idUsuario);
 
             if (ficha is null)
             {
-                if (!_context.FichasRpg.Any(f => f.IdUsuario == idUsuario))
-                {
-                    return BadRequest(new { 
-                        message = $"O usuário {usuario.Nome} (ID: {idUsuario}) não possui fichas de RPG para serem deletadas." 
+                return !_context.FichasRpg.Any(f => f.IdUsuario == idUsuario)
+                    ? BadRequest(new
+                    {
+                        message = $"O usuário {usuario.Nome} (ID: {idUsuario}) não possui fichas de RPG para serem deletadas."
+                    })
+                    : NotFound(new
+                    {
+                        message = $"Não foram encontradas fichas para o usuário {usuario.Nome} com o ID ({idUsuario}) fornecido."
                     });
-                }
-
-                return NotFound(new { 
-                    message = $"Não foram encontradas fichas para o usuário {usuario.Nome} com o ID ({idUsuario}) fornecido." 
-                });
             }
 
             if (ficha.Deletado.HasValue && ficha.Deletado.Value)
@@ -206,7 +210,7 @@ namespace api.Controllers
             ficha.DataAtualizado = DateTime.Now;
 
             _context.Entry(ficha).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _ = await _context.SaveChangesAsync();
 
             return Ok(new { message = $"A ficha de RPG com ID {idFicha} foi deletada com sucesso." });
         }

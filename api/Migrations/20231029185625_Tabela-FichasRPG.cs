@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -9,7 +8,7 @@ namespace api.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "fichas_rpg",
                 columns: table => new
                 {
@@ -28,8 +27,8 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_fichas_rpg", x => x.id_ficha_rpg);
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("pk_fichas_rpg", x => x.id_ficha_rpg);
+                    _ = table.ForeignKey(
                         name: "fk_fichas_rpg_usuarios_id_usuario",
                         column: x => x.id_usuario,
                         principalTable: "usuarios",
@@ -37,7 +36,7 @@ namespace api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "ix_fichas_rpg_id_usuario",
                 table: "fichas_rpg",
                 column: "id_usuario");
@@ -45,7 +44,7 @@ namespace api.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "fichas_rpg");
         }
     }

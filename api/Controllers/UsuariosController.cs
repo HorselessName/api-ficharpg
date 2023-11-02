@@ -24,7 +24,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<UsuarioViewModel>>> GetUsuariosAsync()
         {
-            var usuarios = await _context.Usuarios
+            List<UsuarioViewModel> usuarios = await _context.Usuarios
                 .Where(u => !(u.Deletado ?? true))
                 .Select(u => new UsuarioViewModel
                 {
@@ -42,17 +42,16 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<IList<UsuarioViewModel>>> GetUsuarioAsync(long id)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
 
-            if (usuario == null)
-                return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
-
-            return Ok(new UsuarioViewModel
-            {
-                IdUsuario = usuario.IdUsuario,
-                Nome = usuario.Nome,
-                Email = usuario.Email
-            });
+            return usuario == null
+                ? (ActionResult<IList<UsuarioViewModel>>)NotFound(new { message = USER_NOT_FOUND_MESSAGE })
+                : (ActionResult<IList<UsuarioViewModel>>)Ok(new UsuarioViewModel
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email
+                });
         }
 
         // Cadastrar Usuario -- POST : api/Usuarios
@@ -62,11 +61,14 @@ namespace api.Controllers
             // Verificando se os campos Nome e Email foram fornecidos
             if (AreAnyNullOrEmpty(
                 userInput.Nome,
-                userInput.Email)) return BadRequest(new
+                userInput.Email))
+            {
+                return BadRequest(new
                 {
                     message = "Nome e Email são obrigatórios!"
                 }
                 );
+            }
 
             UsuarioModel usuario = new()
             {
@@ -74,8 +76,8 @@ namespace api.Controllers
                 Email = userInput.Email
             };
 
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
+            _ = _context.Usuarios.Add(usuario);
+            _ = await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 actionName: nameof(GetUsuarioAsync),
@@ -91,10 +93,12 @@ namespace api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<object>> PutUsuario(long id, UsuarioViewModel userInput)
         {
-            var existingUser = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
+            UsuarioModel existingUser = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id && !(u.Deletado ?? true));
 
             if (existingUser == null)
+            {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+            }
 
             string updatedFields = "";
 
@@ -116,7 +120,7 @@ namespace api.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _ = await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -132,18 +136,34 @@ namespace api.Controllers
             });
         }
 
+        // Deletar Usuario (Implementa Cascade Delete) -- DELETE : api/Usuarios/1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(long id)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id);
+            UsuarioModel usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == id);
 
             if (usuario is null)
+            {
                 return NotFound(new { message = USER_NOT_FOUND_MESSAGE });
+            }
 
             if (usuario.Deletado.HasValue && usuario.Deletado.Value)
-                return BadRequest(new { 
-                    message = $"O usuário {usuario.Nome} (ID: {usuario.IdUsuario}) já foi deletado." }
+            {
+                return BadRequest(new
+                {
+                    message = $"O usuário {usuario.Nome} (ID: {usuario.IdUsuario}) já foi deletado."
+                }
                 );
+            }
+
+            // Antes de marcar o usuário como deletado, vamos marcar todas as fichas de RPG associadas a ele como deletadas
+            var fichasDeRpgAssociadas = await _context.FichasRpg.Where(f => f.IdUsuario == id).ToListAsync();
+            foreach (var ficha in fichasDeRpgAssociadas)
+            {
+                ficha.Deletado = true;
+                ficha.DataAtualizado = DateTime.Now;
+                _context.Entry(ficha).State = EntityState.Modified;
+            }
 
             usuario.Deletado = true;
             usuario.DataAtualizado = DateTime.Now;
@@ -151,8 +171,9 @@ namespace api.Controllers
 
             _ = await _context.SaveChangesAsync();
 
-            return Ok(new { 
-                message = $"O usuário {usuario.Nome} (ID: {usuario.IdUsuario}) foi deletado com sucesso." 
+            return Ok(new
+            {
+                message = $"O usuário {usuario.Nome} (ID: {usuario.IdUsuario}) foi deletado com sucesso e todas as suas fichas de RPG associadas foram marcadas como deletadas."
             });
         }
 
