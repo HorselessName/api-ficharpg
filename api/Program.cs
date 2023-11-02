@@ -2,12 +2,17 @@ using api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Net;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    options =>
+    {
+        // Correção: No routes matched the supplied values.
+        options.SuppressAsyncSuffixInActionNames = false;
+    }
+    );
 builder.Services.AddDbContext<AppDataContext>(options =>
     options.UseSqlite("Data Source=mos_database.db;Cache=shared").UseSnakeCaseNamingConvention()
 );
@@ -25,12 +30,12 @@ ApplyMigrations(app);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
 }
 else
 {
-    app.UseHttpsRedirection();
+    _ = app.UseHttpsRedirection();
 }
 
 app.UseAuthorization();
@@ -45,11 +50,11 @@ app.Run();
 
 void ApplyMigrations(WebApplication app)
 {
-    using var scope = app.Services.CreateScope();
-    var services = scope.ServiceProvider;
+    using IServiceScope scope = app.Services.CreateScope();
+    IServiceProvider services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<AppDataContext>();
+        AppDataContext context = services.GetRequiredService<AppDataContext>();
         context.Database.Migrate();
     }
     catch (Exception ex)
@@ -60,7 +65,7 @@ void ApplyMigrations(WebApplication app)
 
 void SetupCORS(WebApplication app)
 {
-    app.UseCors(request => request.AllowAnyOrigin());  // Mantenha isso em mente ao migrar para produção
+    _ = app.UseCors(request => request.AllowAnyOrigin());  // Mantenha isso em mente ao migrar para produção
 }
 
 public class ExceptionMiddleware

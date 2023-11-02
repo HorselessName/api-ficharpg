@@ -10,7 +10,7 @@ namespace api.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdFichaRpg { get; set; }
+        public long IdFichaRpg { get; set; }
 
         [Required]
         public int Nível { get; set; }
@@ -38,7 +38,7 @@ namespace api.Models
         public long IdUsuario { get; set; }
 
         [Required]
-        public virtual UsuarioModel Usuario { get; set; }
+        public UsuarioModel Usuario { get; set; }
 
         public FichaRpgModel()
         {
