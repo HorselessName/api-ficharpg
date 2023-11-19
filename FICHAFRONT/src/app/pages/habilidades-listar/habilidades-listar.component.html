@@ -1,0 +1,29 @@
+<h1>Listagem de Habilidades do Jogo</h1>
+
+<table id="table">
+  <tr>
+    <th>Id</th>
+    <th>Nome</th>
+    <th>Pontos de Habilidade</th>
+    <th>Id Personagem</th>
+    <th class="acoes">Ações</th> 
+
+  </tr>
+  <tr *ngFor="let h of habilidades">
+    <td>{{ h.idHabilidade }}</td>
+    <td>
+      <span *ngIf="!h.editing">{{ h.nome }}</span>
+      <input [(ngModel)]="h.nome" *ngIf="h.editing">
+  </td>
+  <td>
+    <span *ngIf="!h.editing">{{ h.pontos }}</span>
+    <input [(ngModel)]="h.pontos" type="number" *ngIf="h.editing" (keydown)="bloquearNaoNumericos($event)">
+  </td>
+    <td>{{ h.idFichaRpg }}</td>
+    <td>
+      <button (click)="deletarHabilidade(h.idHabilidade)">Deletar</button>
+      <button (click)="h.editing = !h.editing">{{ h.editing ? 'Cancelar' : 'Editar' }}</button>
+      <button *ngIf="h.editing" (click)="salvarEdicao(h)">Salvar</button>
+    </td>
+</tr>
+</table>

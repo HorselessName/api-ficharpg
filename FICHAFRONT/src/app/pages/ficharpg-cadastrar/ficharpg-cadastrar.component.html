@@ -1,0 +1,36 @@
+<div class="form-container">
+    <h1 class="form-title">Cadastre sua Ficha Rpg:</h1>
+    <form>
+        <div class="form-group">
+            <label for="Nivel">Nivel:</label>
+            <input type="number" id="Nivel" name="Nivel" [(ngModel)]="ficharpg.Nivel" class="form-control" (keydown)="bloquearNaoNumericos($event)">
+        </div>
+        <div class="form-group">
+            <label for="Antecedencia">Antecedência:</label>
+            <input type="text" id="Antecedencia" name="Antecedencia" [(ngModel)]="ficharpg.Antecedencia" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="Raca">Raça:</label>
+            <input type="text" id="Raca" name="Raça" [(ngModel)]="ficharpg.Raca" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="NomeDoJogador">Nome Do Personagem:</label>
+            <input type="text" id="NomeDoJogador" name="NomeDoJogador" [(ngModel)]="ficharpg.NomeDoJogador" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="Alinhamento">Alinhamento:</label>
+            <input type="text" id="Alinhamento" name="Alinhamento" [(ngModel)]="ficharpg.Alinhamento" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="PontosDeExperiencia">Pontos De Experiência:</label>
+            <input type="number" id="PontosDeExperiencia" name="PontosDeExperiencia" [(ngModel)]="ficharpg.PontosDeExperiencia" class="form-control" (keydown)="bloquearNaoNumericos($event)">
+        </div>
+        <div class="form-group">
+            <label for="IdUsuario">Usuário:</label>
+            <select id="IdUsuario" name="IdUsuario" [(ngModel)]="ficharpg.IdUsuario" class="form-control">
+              <option *ngFor="let usuario of usuarios" [value]="usuario.idUsuario">{{ usuario.nome }}</option>
+            </select>
+          </div>
+        <button  (click)="cadastrar_ficharpg()">Cadastrar</button>
+    </form>
+  </div>

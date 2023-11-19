@@ -1,0 +1,14 @@
+<div class="form-container">
+  <h1 class="form-title">Cadastre seu Usuário:</h1>
+  <form>
+      <div class="form-group">
+          <label for="name">Nome:</label>
+          <input type="text" id="name" name="name" [(ngModel)]="usuario.nome" class="form-control">
+      </div>
+      <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" [(ngModel)]="usuario.email" class="form-control">
+      </div>
+      <button (click)="cadastrar_usuario()">Cadastrar</button>
+  </form>
+</div>

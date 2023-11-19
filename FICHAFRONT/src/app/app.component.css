@@ -1,0 +1,57 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; 
+    background: #f4f4f4;
+  }
+  
+  a {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px; 
+    margin: 15px 0; 
+    text-decoration: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; 
+    font-size: 18px; 
+    font-weight: bold; 
+    border: 2px solid transparent; 
+  }
+  
+  
+  a:hover {
+    background-color: #0056b3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+    border: 2px solid #004c8c; 
+    transform: scale(1.05); 
+  }
+  
+  router-outlet {
+    width: 100%;
+  }
+  
+  .menu{
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+
+.container{
+    height: calc(100% - 64px);
+}
+
+.item{
+    display: flex;
+    align-items: center;
+}
+
+.icon{
+    margin-right: 8px;
+}
+
+.content{
+    padding: 8px;
+}

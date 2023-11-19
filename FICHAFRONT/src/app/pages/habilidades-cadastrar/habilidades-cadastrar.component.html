@@ -1,0 +1,21 @@
+<div class="form-container">
+    <h1 class="form-title">Cadastre suas Habilidades:</h1>
+    <form>
+        <div class="form-group">
+            <label for="name">Nome da Habilidade:</label>
+            <input type="text" id="name" name="name" [(ngModel)]="habilidades.nome" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="pontos">Pontos de Habilidade:</label>
+            <input type="number" id="pontos" name="pontos" [(ngModel)]="habilidades.pontos" class="form-control"  (keydown)="bloquearNaoNumericos($event)">
+        </div>
+        <div class="form-group">
+            <label for="ficharpg">Personagem da Qual Habilidade Pertence:</label>
+            <select id="ficharpg" name="ficharpg" [(ngModel)]="habilidades.idfichaRpg" class="form-control">
+                <option *ngFor="let ficharpg of ficharpg" [value]="ficharpg.idFichaRpg">{{ ficharpg.nomeDoJogador }}</option>
+              </select>
+        </div>
+        <button (click)="cadastrar_habilidade()" >Cadastrar</button>
+    </form>
+  </div>
+  

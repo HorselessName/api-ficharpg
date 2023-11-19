@@ -1,0 +1,28 @@
+<h1>Total de Usuarios</h1>
+
+<table id="table">
+  <tr>
+    <th>Id</th>
+    <th>Nome</th>
+    <th>Email</th>
+    <th class="acoes">Ações</th>
+
+
+  </tr>
+  <tr *ngFor="let u of usuarios">
+    <td>{{ u.idUsuario }}</td>
+    <td>
+        <span *ngIf="!u.editing">{{ u.nome }}</span>
+        <input [(ngModel)]="u.nome" *ngIf="u.editing">
+    </td>
+    <td>
+        <span *ngIf="!u.editing">{{ u.email }}</span>
+        <input [(ngModel)]="u.email" *ngIf="u.editing">
+    </td>
+    <td>
+        <button (click)="deletarUsuario(u.idUsuario)">Deletar</button>
+        <button (click)="u.editing = !u.editing">{{ u.editing ? 'Cancelar' : 'Editar' }}</button>
+        <button *ngIf="u.editing" (click)="salvarEdicao(u)">Salvar</button>
+    </td>
+</tr>
+</table>

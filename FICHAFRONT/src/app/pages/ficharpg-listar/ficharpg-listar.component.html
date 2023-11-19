@@ -1,0 +1,49 @@
+<h1>Listagem de Personagens</h1>
+
+<table id="table">
+  <tr>
+    <th>Id</th>
+    <th>Nivel</th>
+    <th>Antecedência</th>
+    <th>Personagem</th>
+    <th>Raça</th>
+    <th>Alinhamento</th>
+    <th>Pontos de Experiência</th>
+    <th>Usuario</th>
+    <th class="acoes">Ações</th>
+
+  </tr>
+  <tr *ngFor="let f of fichasrpg">
+    <td>{{ f.idFichaRpg }}</td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.nivel }}</span>
+        <input [(ngModel)]="f.nivel" type="number" *ngIf="f.editing" (keydown)="bloquearNaoNumericos($event)">
+    </td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.antecedencia }}</span>
+        <input [(ngModel)]="f.antecedencia" *ngIf="f.editing">
+    </td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.nomeDoJogador }}</span>
+        <input [(ngModel)]="f.nomeDoJogador" *ngIf="f.editing">
+    </td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.raca }}</span>
+        <input [(ngModel)]="f.raca" *ngIf="f.editing">
+    </td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.alinhamento }}</span>
+        <input [(ngModel)]="f.alinhamento" *ngIf="f.editing">
+    </td>
+    <td>
+        <span *ngIf="!f.editing">{{ f.pontosDeExperiencia }}</span>
+        <input [(ngModel)]="f.pontosDeExperiencia" type="number" *ngIf="f.editing" (keydown)="bloquearNaoNumericos($event)">
+    </td>
+    <td>{{ getUserName(f.idUsuario) }}</td>
+    <td>
+        <button (click)="deletarFicha(f.idFichaRpg)">Deletar</button>
+        <button (click)="f.editing = !f.editing">{{ f.editing ? 'Cancelar' : 'Editar' }}</button>
+        <button *ngIf="f.editing" (click)="salvarEdicao(f)">Salvar</button>
+    </td>
+</tr>
+</table>

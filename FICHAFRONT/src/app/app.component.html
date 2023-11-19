@@ -1,0 +1,56 @@
+<mat-toolbar color="primary">
+    <button class="menu" mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon> menu </mat-icon>
+      </button>
+      <span>Ficha RPG</span>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+    <mat-sidenav #sidenav [opened]="true" mode="side">
+        <mat-nav-list>
+            <a mat-list-item routerLink="/pages/usuario-listar">
+                <div class="item">
+                    <mat-icon class="icon"> list </mat-icon>
+                    <span> Listagem Usuarios</span>
+                </div>
+            </a>
+            <a mat-list-item routerLink="/pages/usuario-cadastrar/"> 
+            <div class="item">
+                <mat-icon class="icon"> add </mat-icon>
+                <span> Cadastrar Usuario </span>
+            </div>
+            </a>
+            <a mat-list-item routerLink="/pages/ficharpg-listar"> 
+                <div class="item">
+                    <mat-icon class="icon"> list </mat-icon>
+                    <span> Listagem Ficha RPG </span>
+                </div>
+            </a>
+        
+            <a mat-list-item routerLink="/pages/ficharpg-cadastrar/"> 
+                <div class="item">
+                    <mat-icon class="icon"> add </mat-icon>
+                    <span> Cadastrar Ficha RPG </span>
+                </div>
+            </a>
+            <a mat-list-item routerLink="/pages/habilidades-listar/"> 
+                <div class="item">
+                    <mat-icon class="icon"> list </mat-icon>
+                    <span> Listar Habilidades de Personagens </span>
+                </div>
+            </a>
+            <a mat-list-item routerLink="/pages/habilidades-cadastrar/"> 
+                <div class="item">
+                    <mat-icon class="icon"> add </mat-icon>
+                    <span> Cadastrar Habilidades  </span>
+                </div>
+            </a>
+        
+        </mat-nav-list>
+    </mat-sidenav>
+
+<mat-sidenav-content class="content">
+    <router-outlet>
+    </router-outlet>
+</mat-sidenav-content>
+</mat-sidenav-container>
