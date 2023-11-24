@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from "@angular/common/http";
 
+import { MatExpansionModule } from '@angular/material/expansion';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UsuarioCadastrarComponent } from './pages/usuario-cadastrar/usuario-cadastrar.component';
@@ -51,6 +52,7 @@ import { HabilidadesListarComponent } from './pages/habilidades-listar/habilidad
     MatInputModule,
     MatFormFieldModule,
     MatSnackBarModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

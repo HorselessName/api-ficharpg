@@ -8,43 +8,82 @@
 <mat-sidenav-container class="container">
     <mat-sidenav #sidenav [opened]="true" mode="side">
         <mat-nav-list>
-            <a mat-list-item routerLink="/pages/usuario-listar">
-                <div class="item">
-                    <mat-icon class="icon"> list </mat-icon>
-                    <span> Listagem Usuarios</span>
-                </div>
-            </a>
-            <a mat-list-item routerLink="/pages/usuario-cadastrar/"> 
-            <div class="item">
-                <mat-icon class="icon"> add </mat-icon>
-                <span> Cadastrar Usuario </span>
-            </div>
-            </a>
-            <a mat-list-item routerLink="/pages/ficharpg-listar"> 
-                <div class="item">
-                    <mat-icon class="icon"> list </mat-icon>
-                    <span> Listagem Ficha RPG </span>
-                </div>
-            </a>
-        
-            <a mat-list-item routerLink="/pages/ficharpg-cadastrar/"> 
-                <div class="item">
-                    <mat-icon class="icon"> add </mat-icon>
-                    <span> Cadastrar Ficha RPG </span>
-                </div>
-            </a>
-            <a mat-list-item routerLink="/pages/habilidades-listar/"> 
-                <div class="item">
-                    <mat-icon class="icon"> list </mat-icon>
-                    <span> Listar Habilidades de Personagens </span>
-                </div>
-            </a>
-            <a mat-list-item routerLink="/pages/habilidades-cadastrar/"> 
-                <div class="item">
-                    <mat-icon class="icon"> add </mat-icon>
-                    <span> Cadastrar Habilidades  </span>
-                </div>
-            </a>
+
+            <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Usuario
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+
+                  <a mat-list-item routerLink="/pages/usuario-listar"> 
+                    <div class="item">
+                        <mat-icon class="icon"> list </mat-icon>
+                        <span> Listagem de Usuarios </span>
+                    </div>
+                </a>
+              
+                  <a mat-list-item routerLink="/pages/usuario-cadastrar/"> 
+                    <div class="item">
+                        <mat-icon class="icon"> add </mat-icon>
+                        <span> Cadastrar Usuario </span>
+                    </div>
+                    </a>
+                    
+                  
+                </mat-expansion-panel>
+              </mat-accordion><br>
+
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Ficha RPG
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+              
+                  <a mat-list-item routerLink="/pages/ficharpg-listar"> 
+                    <div class="item">
+                        <mat-icon class="icon"> list </mat-icon>
+                        <span> Listagem Ficha RPG </span>
+                    </div>
+                </a>
+            
+                <a mat-list-item routerLink="/pages/ficharpg-cadastrar/"> 
+                    <div class="item">
+                        <mat-icon class="icon"> add </mat-icon>
+                        <span> Cadastrar Ficha RPG </span>
+                    </div>
+                </a>
+                  
+                </mat-expansion-panel>
+              </mat-accordion><br>
+
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Habilidades
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+              
+                  <a mat-list-item routerLink="/pages/habilidades-listar/"> 
+                    <div class="item">
+                        <mat-icon class="icon"> list </mat-icon>
+                        <span> Listar Habilidades de Personagens </span>
+                    </div>
+                </a>
+                <a mat-list-item routerLink="/pages/habilidades-cadastrar/"> 
+                    <div class="item">
+                        <mat-icon class="icon"> add </mat-icon>
+                        <span> Cadastrar Habilidades  </span>
+                    </div>
+                </a>
+                  
+                  
+                </mat-expansion-panel>
+              </mat-accordion><br>
         
         </mat-nav-list>
     </mat-sidenav>
